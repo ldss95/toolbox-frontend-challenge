@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Container, Table, Alert, Spinner } from "react-bootstrap";
 
 import { RenderIf, Header } from "./components"
+import { fetchFiles } from "./services/files";
 
 function App() {
   const [search, setSearch] = useState('');
@@ -18,27 +19,17 @@ function App() {
   async function loadData() {
     try {
       setLoading(true);
-      const query = (search !== '')
-        ? '?fileName=' + search
-        : '';
-
-      const res = await fetch('http://localhost:3000/v1/files/data' + query);
-      const data = await res.json();
-      if (res.statusText !== 'OK') {
-        let message = data?.message || 'Ha ocurrido un error desconocido';
-        if (search !== '' && !search.includes('.csv')) {
-          message += ': Asegurate de agregar la extension .csv al final del nombre del archivo';
-        }
-
-        setError(message);
-        setData([]);
-        return;
-      }
-
+      const data = await fetchFiles(search);
       setData(data);
       setError(null);
     } catch (error) {
-      console.error(error);
+      let message = error?.message || 'Ha ocurrido un error desconocido';
+      if (search !== '' && !search.includes('.csv')) {
+        message += ': Asegurate de agregar la extension .csv al final del nombre del archivo';
+      }
+
+      setError(message);
+      setData([]);
     } finally {
       setLoading(false);
     }
