@@ -1,42 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Container, Table, Alert, Spinner } from "react-bootstrap";
 
 import { RenderIf, Header } from "./components"
-import { fetchFiles } from "./services/files";
+import { useFetchFiles } from "./hooks/useFiles";
 
 function App() {
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    loadData()
-
-    // eslint-disable-next-line
-  }, []);
-
-  async function loadData() {
-    try {
-      setLoading(true);
-      const data = await fetchFiles(search);
-      setData(data);
-      setError(null);
-    } catch (error) {
-      let message = error?.message || 'Ha ocurrido un error desconocido';
-      if (search !== '' && !search.includes('.csv')) {
-        message += ': Asegurate de agregar la extension .csv al final del nombre del archivo';
-      }
-
-      setError(message);
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [files, loading, error, reload] = useFetchFiles();
 
   function adaptedData() {
-    return data
+    return files
       .map(({ lines, file }) =>
         lines.map(line => ({ ...line, file }))
       )         // Incluye el nombre del archivo dentro de cada linea
@@ -45,7 +18,7 @@ function App() {
 
   return (
     <div>
-      <Header setSearch={setSearch} loadData={loadData} />
+      <Header setSearch={setSearch} loadData={() => reload(search)} />
       <br />
       <br />
 
