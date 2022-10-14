@@ -4,10 +4,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import FilesState from './context/files/state';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <App />
+    <FilesState>
+        <App />
+    </FilesState>
 );
 
 // If you want to start measuring performance in your app, pass a function

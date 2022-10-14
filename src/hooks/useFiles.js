@@ -28,7 +28,7 @@ export const useFetchFiles = () => {
             setFiles(data);
             setError(null);
         } catch (error) {
-            if (!isMounted.current) {
+            if (!isMounted.current || error?.message === 'Fetch is aborted') {
                 return;
             }
 

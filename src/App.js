@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useContext } from "react";
 import { Container, Table, Alert, Spinner } from "react-bootstrap";
 
 import { RenderIf, Header } from "./components"
+import FilesContext from "./context/files/context";
 import { useFetchFiles } from "./hooks/useFiles";
 
 function App() {
-  const [search, setSearch] = useState('');
+  const { search } = useContext(FilesContext);
   const [files, loading, error, reload] = useFetchFiles();
+
+  useEffect(() => {
+    reload(search);
+
+    // eslint-disable-next-line
+  }, [search]);
 
   function adaptedData() {
     return files
@@ -18,7 +25,7 @@ function App() {
 
   return (
     <div>
-      <Header setSearch={setSearch} loadData={() => reload(search)} />
+      <Header />
       <br />
       <br />
 
