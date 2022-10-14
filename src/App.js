@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button, Navbar, Container, Form, Table, Alert, Spinner } from "react-bootstrap";
+import { Container, Table, Alert, Spinner } from "react-bootstrap";
+
+import { RenderIf, Header } from "./components"
 
 function App() {
   const [search, setSearch] = useState('');
@@ -29,6 +31,7 @@ function App() {
         }
 
         setError(message);
+        setData([]);
         return;
       }
 
@@ -41,40 +44,32 @@ function App() {
     }
   }
 
+  function adaptedData() {
+    return data
+      .map(({ lines, file }) =>
+        lines.map(line => ({ ...line, file }))
+      )         // Incluye el nombre del archivo dentro de cada linea
+      .flat()   // Aplana el array, obteniendo un unico array con todas las propiedades necesarias
+  }
+
   return (
     <div>
-      <Navbar bg="light" expand="lg">
-        <Container fluid>
-          <Navbar.Brand href="#">React Test App</Navbar.Brand>
-          <Navbar id="navbarScroll">
-            <Form className="d-flex" onSubmit={(event) => event.preventDefault()}>
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-                onChange={({ target }) => setSearch(target.value)}
-              />
-              <Button variant="outline-success" onClick={loadData} type="button">Search</Button>
-            </Form>
-          </Navbar>
-        </Container>
-      </Navbar>
+      <Header setSearch={setSearch} loadData={loadData} />
       <br />
       <br />
 
       <Container>
-        {loading && (
+        <RenderIf condition={loading}>
           <div className="d-flex justify-content-center">
             <Spinner animation="grow" />
           </div>
-        )}
+        </RenderIf>
         <br />
         <br />
 
-        {error && (
+        <RenderIf condition={error}>
           <Alert variant="danger">{error}</Alert>
-        )}
+        </RenderIf>
 
         <Table striped bordered hover>
           <thead>
@@ -86,12 +81,9 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {data
-              .map(({ lines, file }) => lines.map(line => ({ ...line, fileName: file })))
-              .flat()
-              .map(({ fileName, text, number, hex }, index) => (
+            {adaptedData().map(({ file, text, number, hex }, index) => (
                 <tr key={'item-' + index}>
-                  <td>{fileName}</td>
+                  <td>{file}</td>
                   <td>{text}</td>
                   <td>{number}</td>
                   <td>{hex}</td>
