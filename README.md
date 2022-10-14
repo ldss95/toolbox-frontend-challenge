@@ -1,8 +1,10 @@
 # ToolBox FullStack Challenge (CLIENT)
+Esta app de `React JS` sirve como cliente para consumir el API propuesta en el challenge de ToolBox para la vacante de FullStack developer, la cual entrega una lista de archivos en formato JSON.
 
-Este cliente fue creado con React JS 18 bajo la version `16 de Node JS` para consumir un API que retorna una lista de archivos en formato JSON.     
-Para las llamadas HTTP se uso fetch, context API para manejar el state y hooks de react.
-
+## Construido con
+* Node JS 16
+* React JS 18
+<br>
 
 ### Instalar dependencias
 ```
